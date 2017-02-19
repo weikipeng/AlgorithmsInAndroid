@@ -1,9 +1,12 @@
 package pengjunwei.android.algorithms.sort.method;
 
+import android.util.Log;
+
 import java.util.List;
 
 import pengjunwei.android.algorithms.sort.DataSort;
 import pengjunwei.android.algorithms.sort.ISortInterface;
+import pengjunwei.android.algorithms.sort.SortInfo;
 import pengjunwei.android.algorithms.sort.SortView;
 
 /**
@@ -22,16 +25,19 @@ public class BubbleSort implements ISortInterface {
                 if (view instanceof SortView) {
                     SortView       sortView = (SortView) view;
                     List<DataSort> dataList = sortView.getDataList();
+                    SortInfo       sortInfo = sortView.getSortInfo();
 
-                    int      x, y;
-                    int      length = dataList.size();
-                    DataSort valueX, valueY;
+                    int        x, y;
+                    int        length    = dataList.size();
+                    DataSort   valueX, valueY;
                     for (int j = 1; j < length - 1; j++) {
                         for (x = 0; x < length - j; x++) {
+                            Log.e("peng", "BubbleSort===> run");
                             sortView.markPosition(x, x + 1);
 
                             try {
-                                Thread.sleep(10);
+                                final long sleepTime = sortInfo.sleepTime;
+                                Thread.sleep(sleepTime);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -43,6 +49,13 @@ public class BubbleSort implements ISortInterface {
                                 dataList.set(x, valueY);
 
                                 sortView.postInvalidate();
+
+                                try {
+                                    final long sleepTime = sortInfo.sleepTime;
+                                    Thread.sleep(sleepTime);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
 

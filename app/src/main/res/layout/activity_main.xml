@@ -12,11 +12,31 @@
         android:paddingBottom="15dp"
         android:paddingTop="15dp">
 
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:text="开始"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonStart"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:text="开始"/>
+
+            <Button
+                android:text="减速"
+                android:id="@+id/buttonSlower"
+                android:layout_width="120dp"
+                android:layout_height="60dp"/>
+
+            <Button
+                android:text="加速"
+                android:id="@+id/buttonFaster"
+                android:layout_width="120dp"
+                android:layout_height="60dp"/>
+        </LinearLayout>
+
 
     </LinearLayout>
 </ScrollView>

@@ -40,7 +40,7 @@ public class SortInfo {
 
     public List<Integer> positionList;
     public List<Integer> removedList;
-
+    public long sleepTime = 500;
 
     public SortInfo() {
         positionList = new ArrayList<>();

@@ -13,7 +13,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -41,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void init() {
         mBtnStart = (Button) findViewById(R.id.buttonStart);
         mBtnStart.setOnClickListener(this);
+        findViewById(R.id.buttonFaster).setOnClickListener(this);
+        findViewById(R.id.buttonSlower).setOnClickListener(this);
+
 
         mRootLayout = (ViewGroup) findViewById(R.id.rootLayout);
         mSortViews = new SortView[2];
@@ -111,6 +113,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 mSortViews[0].setSort(new BubbleSort());
                 mSortViews[0].startSort();
+                break;
+            case R.id.buttonFaster:
+                mSortViews[0].getSortInfo().sleepTime /= 2;
+                break;
+            case R.id.buttonSlower:
+                mSortViews[0].getSortInfo().sleepTime *= 2;
                 break;
         }
     }
