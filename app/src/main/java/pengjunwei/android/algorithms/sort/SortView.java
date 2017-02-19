@@ -7,8 +7,11 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 
 import java.util.List;
@@ -32,6 +35,10 @@ public class SortView extends View {
 
     protected SortInfo       mSortInfo;
     protected ISortInterface mSortInterface;
+    public static final int SIZE_TEXT_NAME            = 16;
+    public static final int SIZE_TEXT_NAME_MARGIN_TOP = 10;
+
+    protected int mNameMarginTop;
 
     public SortView(Context context) {
         this(context, null);
@@ -56,6 +63,11 @@ public class SortView extends View {
         mSortInfo = new SortInfo();
 //        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint = new Paint();
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        paint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, SIZE_TEXT_NAME, displayMetrics));
+        mNameMarginTop = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, SIZE_TEXT_NAME_MARGIN_TOP, displayMetrics);
         rect = new Rect();
     }
 
@@ -66,23 +78,46 @@ public class SortView extends View {
         mWidth = getWidth();
         mHeight = getHeight();
 
+        int   textOtherSize = (int) ((paint.descent() + paint.ascent()) / 2);
+        float textSize      = paint.getTextSize();
+
+        int rectBottom = (int) (mHeight - textSize - mNameMarginTop - textOtherSize);
+
+        if (mSortInterface != null && !TextUtils.isEmpty(mSortInterface.getSortAlgorithmsName())) {
+            int         nameY = (int) (mHeight - textSize / 2 - textOtherSize);
+            Paint.Align align = paint.getTextAlign();
+
+            //测试中间线条
+//            paint.setColor(Color.RED);
+//            canvas.drawText(mSortInterface.getSortAlgorithmsName(), mWidth / 2, nameY, paint);
+//            canvas.drawLine(0, mHeight - 1, mWidth, mHeight - 1, paint);
+//            canvas.drawLine(0, nameY, mWidth, nameY, paint);
+//            canvas.drawLine(mWidth / 2, 0, mWidth / 2, mHeight, paint);
+
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setColor(Color.BLUE);
+            canvas.drawText(mSortInterface.getSortAlgorithmsName(), mWidth / 2, nameY, paint);
+
+            paint.setTextAlign(align);
+        }
+
         if (mDataList != null && mDataList.size() > 0) {
             mItemWith = (mWidth - getPaddingLeft() - getPaddingRight()) / mDataList.size();
 
-            Log.i("SortView", "onDraw====> width:" + mWidth + "  height:" + mHeight + "  mItemHeight:" + mHeight);
+            Log.i("SortView", "onDraw====> width:" + mWidth + "  height:" + mHeight + "  mItemHeight:" + mHeight +"\n textOtherSize:"+textOtherSize);
 
             x = getPaddingLeft();
 
             for (DataSort dataSort : mDataList) {
                 paint.setStyle(Paint.Style.FILL);
                 paint.setColor(dataSort.color);
-                rect.set(x, mHeight - dataSort.value, x + mItemWith, mHeight);
+                rect.set(x, rectBottom - dataSort.value, x + mItemWith, rectBottom);
                 canvas.drawRect(rect, paint);
 
 
                 paint.setStyle(Paint.Style.STROKE);
                 paint.setColor(dataSort.bordColor);
-                rect.set(x, mHeight - dataSort.value, x + mItemWith, mHeight);
+                rect.set(x, rectBottom - dataSort.value, x + mItemWith, rectBottom);
                 canvas.drawRect(rect, paint);
 
                 x += mItemWith;

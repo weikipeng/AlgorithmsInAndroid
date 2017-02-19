@@ -1,16 +1,14 @@
 package pengjunwei.android.algorithms;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,18 +53,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRootLayout = (ViewGroup) findViewById(R.id.rootLayout);
         mSortViews = new SortView[2];
 
-        //
-        DisplayMetrics            metrics      = getResources().getDisplayMetrics();
-        int                       height       = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 240, metrics);
-        int                       padding      = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, metrics);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
-
-        int length = mSortViews.length;
+        int    length      = mSortViews.length;
+        String packageName = getPackageName();
         for (int i = 0; i < length; i++) {
-            mSortViews[i] = new SortView(this);
-            mSortViews[i].setPadding(padding, padding, padding, padding);
-            mRootLayout.addView(mSortViews[i], layoutParams);
+            mSortViews[i] = (SortView) findViewById(getResources().getIdentifier("sortView" + (i + 1), "id", packageName));
         }
+
+        //初始化
+        mSortViews[0].setSort(new BubbleSort());
 
         mSortViews[0].getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -119,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (mSortViews[0].getSortInfo().isSorted()) {
                     updateDataList();
                 }
-                mSortViews[0].setSort(new BubbleSort());
                 mSortViews[0].startSort();
                 break;
             case R.id.buttonFaster:
@@ -129,5 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mSortViews[0].getSortInfo().slower();
                 break;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.i("peng", "onConfigurationChanged ===> " + newConfig.orientation);
     }
 }

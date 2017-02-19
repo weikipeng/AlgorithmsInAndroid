@@ -25,18 +25,30 @@
                 android:text="开始"/>
 
             <Button
-                android:text="减速"
                 android:id="@+id/buttonSlower"
                 android:layout_width="120dp"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp"
+                android:text="减速"/>
 
             <Button
-                android:text="加速"
                 android:id="@+id/buttonFaster"
                 android:layout_width="120dp"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp"
+                android:text="加速"/>
         </LinearLayout>
 
+
+        <include
+            android:id="@+id/sortView1"
+            layout="@layout/layout_sort_view"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="6dp"/>
+
+        <include
+            android:id="@+id/sortView2"
+            layout="@layout/layout_sort_view"/>
 
     </LinearLayout>
 </ScrollView>

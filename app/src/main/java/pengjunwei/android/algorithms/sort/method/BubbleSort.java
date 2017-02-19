@@ -21,6 +21,9 @@ public class BubbleSort implements ISortInterface {
     @Override
     public void sort(Object tView) {
         this.view = tView;
+        if (taskThread != null) {
+            return;
+        }
         taskThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -71,6 +74,7 @@ public class BubbleSort implements ISortInterface {
             }
         });
         taskThread.setName("冒泡排序-BubbleSort-" + threadCount);
+        threadCount++;
         taskThread.start();
     }
 
@@ -81,10 +85,12 @@ public class BubbleSort implements ISortInterface {
 
     @Override
     public void stop() {
-        Log.i("peng", "冒泡排序-BubbleSort ===> 停止 " + taskThread.getName());
         if (taskThread != null) {
+            Log.i("peng", "冒泡排序-BubbleSort ===> 停止 " + taskThread.getName());
             taskThread.interrupt();
             isStopped = true;
+
+            taskThread = null;
         }
     }
 }
