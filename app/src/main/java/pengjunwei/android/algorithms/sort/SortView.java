@@ -18,9 +18,9 @@ import java.util.List;
  */
 public class SortView extends View {
 
-    protected List<String> mDataList;
-    protected Paint        paint;
-    protected Rect         rect;
+    protected List<DataSort> mDataList;
+    protected Paint          paint;
+    protected Rect           rect;
 
     protected int mWidth;
     protected int mHeight;
@@ -29,6 +29,9 @@ public class SortView extends View {
     protected int mItemWith;
 
     protected final int COLOR_RECT = Color.BLACK;
+
+    protected SortInfo       mSortInfo;
+    protected ISortInterface mSortInterface;
 
     public SortView(Context context) {
         this(context, null);
@@ -50,9 +53,9 @@ public class SortView extends View {
     }
 
     private void init() {
+        mSortInfo = new SortInfo();
 //        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint = new Paint();
-        paint.setStyle(Paint.Style.STROKE);
         rect = new Rect();
     }
 
@@ -63,9 +66,6 @@ public class SortView extends View {
         mWidth = getWidth();
         mHeight = getHeight();
 
-
-        paint.setColor(COLOR_RECT);
-
         if (mDataList != null && mDataList.size() > 0) {
             mItemWith = (mWidth - getPaddingLeft() - getPaddingRight()) / mDataList.size();
 
@@ -73,16 +73,78 @@ public class SortView extends View {
 
             x = getPaddingLeft();
 
-            for (String s : mDataList) {
-                rect.set(x, mHeight - Integer.parseInt(s), x + mItemWith, mHeight);
+            for (DataSort dataSort : mDataList) {
+                paint.setStyle(Paint.Style.FILL);
+                paint.setColor(dataSort.color);
+                rect.set(x, mHeight - dataSort.value, x + mItemWith, mHeight);
                 canvas.drawRect(rect, paint);
+
+
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setColor(dataSort.bordColor);
+                rect.set(x, mHeight - dataSort.value, x + mItemWith, mHeight);
+                canvas.drawRect(rect, paint);
+
                 x += mItemWith;
+            }
+
+            if (mSortInfo.isSorting()) {
+                //休眠
+                try {
+                    Thread.sleep(800);
+                    sort();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
-    public void updateDataList(List<String> dataList) {
+    public void updateDataList(List<DataSort> dataList) {
         this.mDataList = dataList;
+        postInvalidate();
+    }
+
+    public void startSort() {
+
+    }
+
+    protected void sort() {
+        if (mSortInterface != null) {
+            mSortInterface.sort(this);
+        }
+    }
+
+    public void setSort(ISortInterface sortInterface) {
+        mSortInterface = sortInterface;
+    }
+
+    public void endSort() {
+
+    }
+
+    public SortInfo getSortInfo() {
+        return mSortInfo;
+    }
+
+    public List<DataSort> getDataList() {
+        return mDataList;
+    }
+
+    public void markPosition(int... positions) {
+        mSortInfo.setPosition(positions);
+        for (int position : positions) {
+            mDataList.get(position).mark(true);
+            mDataList.get(position).color = SortInfo.COLOR_ARRAY[position % SortInfo.COLOR_ARRAY.length];
+        }
+
+        List<Integer> positionList = mSortInfo.getRemovedPosition();
+
+        for (int position : positionList) {
+            mDataList.get(position).mark(false);
+            mDataList.get(position).color = Color.TRANSPARENT;
+        }
+
         postInvalidate();
     }
 }
