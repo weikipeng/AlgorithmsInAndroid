@@ -87,16 +87,6 @@ public class SortView extends View {
 
                 x += mItemWith;
             }
-
-            if (mSortInfo.isSorting()) {
-                //休眠
-                try {
-                    Thread.sleep(800);
-                    sort();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -106,7 +96,7 @@ public class SortView extends View {
     }
 
     public void startSort() {
-
+        sort();
     }
 
     protected void sort() {
@@ -120,7 +110,23 @@ public class SortView extends View {
     }
 
     public void endSort() {
+        mSortInfo.status = SortInfo.SORT_END;
+        mSortInfo.endTs = System.currentTimeMillis();
 
+        for (DataSort dataSort : mDataList) {
+            dataSort.markSorted();
+            dataSort.color = SortInfo.COLOR_SORTED;
+        }
+
+        postInvalidate();
+    }
+
+    public void markSortedPosition(int... positions) {
+        for (int position : positions) {
+            mDataList.get(position).markSorted();
+            mDataList.get(position).color = SortInfo.COLOR_SORTED;
+        }
+        postInvalidate();
     }
 
     public SortInfo getSortInfo() {
@@ -134,14 +140,17 @@ public class SortView extends View {
     public void markPosition(int... positions) {
         mSortInfo.setPosition(positions);
         for (int position : positions) {
-            mDataList.get(position).mark(true);
+            mDataList.get(position).markSorting();
             mDataList.get(position).color = SortInfo.COLOR_ARRAY[position % SortInfo.COLOR_ARRAY.length];
         }
 
         List<Integer> positionList = mSortInfo.getRemovedPosition();
 
         for (int position : positionList) {
-            mDataList.get(position).mark(false);
+            if (mDataList.get(position).flag == DataSort.FLAG_SORTED) {
+                break;
+            }
+            mDataList.get(position).markNormal();
             mDataList.get(position).color = Color.TRANSPARENT;
         }
 

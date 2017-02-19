@@ -13,11 +13,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import pengjunwei.android.algorithms.sort.DataSort;
 import pengjunwei.android.algorithms.sort.SortView;
+import pengjunwei.android.algorithms.sort.method.BubbleSort;
 
 /**
  * Created by WikiPeng on 2017/2/9 16:08.
@@ -56,13 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mRootLayout.addView(mSortViews[i], layoutParams);
         }
 
-//        mSortViews[0].setSort(new ISortInterface() {
-//            @Override
-//            public void sort(Object view) {
-//                bubbleSort(view);
-//            }
-//        });
-
         mSortViews[0].getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -86,36 +81,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         for (SortView sortView : mSortViews) {
-            sortView.updateDataList(mDataList);
+            //创建List的拷贝，而不是引用的拷贝
+            List<DataSort> tList = getCopyList(mDataList);
+            sortView.updateDataList(tList);
         }
+
+        mSortViews[0].markPosition(0, 1);
+        mSortViews[1].postInvalidateDelayed(2000);
     }
 
-    int count = 0;
+    private List<DataSort> getCopyList(List<DataSort> list) {
+        List<DataSort> result = new ArrayList<>();
+        for (DataSort item : list) {
+            try {
+                result.add(item.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.buttonStart:
-//                mSortViews[0].startSort();
-                if (count % 2 == 0) {
-                    mSortViews[0].markPosition(0, 1);
-                } else {
-                    mSortViews[0].markPosition(2, 3);
+                if (mSortViews[0].getSortInfo().isSorted()) {
+                    updateDataList();
                 }
-
-                count++;
-
+                mSortViews[0].setSort(new BubbleSort());
+                mSortViews[0].startSort();
                 break;
         }
     }
-
-//    protected void bubbleSort(Object view) {
-//        if (view instanceof SortView) {
-//            SortView sortView = (SortView) view;
-//            SortInfo sortInfo = sortView.getSortInfo();
-//            List<String> dataList = sortView.getDataList();
-//
-//
-//        }
-//    }
 }

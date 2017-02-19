@@ -20,6 +20,9 @@ public class SortInfo {
             Color.BLUE,
 //            Color.MAGENTA
     };
+
+    public static final int COLOR_SORTED = Color.MAGENTA;
+
     /**
      * 当前排序状态
      */
@@ -66,5 +69,9 @@ public class SortInfo {
 
     public List<Integer> getRemovedPosition() {
         return removedList;
+    }
+
+    public boolean isSorted() {
+        return status == SORT_END;
     }
 }
