@@ -28,6 +28,8 @@ public class SortView extends View {
     protected int x, y;
     protected int mItemWith;
 
+    protected final int COLOR_RECT = Color.BLACK;
+
     public SortView(Context context) {
         this(context, null);
     }
@@ -61,22 +63,22 @@ public class SortView extends View {
         mWidth = getWidth();
         mHeight = getHeight();
 
-        mItemWith = (mWidth - getPaddingLeft() - getPaddingRight()) / 100;
 
-        Log.i("SortView", "onDraw====> width:" + mWidth + "  height:" + mHeight + "  mItemHeight:" + mHeight);
+        paint.setColor(COLOR_RECT);
 
-        paint.setColor(Color.RED);
+        if (mDataList != null && mDataList.size() > 0) {
+            mItemWith = (mWidth - getPaddingLeft() - getPaddingRight()) / mDataList.size();
 
-//        if (mDataList != null && mDataList.size() > 0) {
-//            x = 0;
-//
-//            for (String s : mDataList) {
-//                rect.set(x, mHeight - Integer.parseInt(s), x + mItemWith, mHeight);
-//                canvas.drawRect(rect, paint);
-//                x++;
-//            }
-//
-//        }
+            Log.i("SortView", "onDraw====> width:" + mWidth + "  height:" + mHeight + "  mItemHeight:" + mHeight);
+
+            x = getPaddingLeft();
+
+            for (String s : mDataList) {
+                rect.set(x, mHeight - Integer.parseInt(s), x + mItemWith, mHeight);
+                canvas.drawRect(rect, paint);
+                x += mItemWith;
+            }
+        }
     }
 
     public void updateDataList(List<String> dataList) {
