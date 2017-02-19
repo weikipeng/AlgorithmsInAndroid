@@ -13,13 +13,15 @@ import pengjunwei.android.algorithms.sort.SortView;
  * Created by WikiPeng on 2017/2/19 15:42.
  */
 public class BubbleSort implements ISortInterface {
-
-    protected Object view;
+    public static int threadCount = 0;
+    protected Object  view;
+    protected Thread  taskThread;
+    protected boolean isStopped;
 
     @Override
     public void sort(Object tView) {
         this.view = tView;
-        new Thread(new Runnable() {
+        taskThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 if (view instanceof SortView) {
@@ -27,19 +29,22 @@ public class BubbleSort implements ISortInterface {
                     List<DataSort> dataList = sortView.getDataList();
                     SortInfo       sortInfo = sortView.getSortInfo();
 
-                    int        x, y;
-                    int        length    = dataList.size();
-                    DataSort   valueX, valueY;
+                    int      x, y;
+                    int      length = dataList.size();
+                    DataSort valueX, valueY;
                     for (int j = 1; j < length - 1; j++) {
                         for (x = 0; x < length - j; x++) {
-                            Log.e("peng", "BubbleSort===> run");
+                            if (isStopped) {
+                                return;
+                            }
+                            Log.e("peng", "BubbleSort===> run " + Thread.currentThread().getName());
                             sortView.markPosition(x, x + 1);
 
                             try {
-                                final long sleepTime = sortInfo.sleepTime;
-                                Thread.sleep(sleepTime);
+                                Thread.sleep(sortInfo.getSleepTime());
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
+                                break;
                             }
 
                             valueX = dataList.get(x);
@@ -51,8 +56,7 @@ public class BubbleSort implements ISortInterface {
                                 sortView.postInvalidate();
 
                                 try {
-                                    final long sleepTime = sortInfo.sleepTime;
-                                    Thread.sleep(sleepTime);
+                                    Thread.sleep(sortInfo.getSleepTime());
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -65,8 +69,22 @@ public class BubbleSort implements ISortInterface {
                     sortView.endSort();
                 }
             }
-        }).start();
+        });
+        taskThread.setName("冒泡排序-BubbleSort-" + threadCount);
+        taskThread.start();
     }
 
+    @Override
+    public String getSortAlgorithmsName() {
+        return "冒泡排序-BubbleSort";
+    }
 
+    @Override
+    public void stop() {
+        Log.i("peng", "冒泡排序-BubbleSort ===> 停止 " + taskThread.getName());
+        if (taskThread != null) {
+            taskThread.interrupt();
+            isStopped = true;
+        }
+    }
 }

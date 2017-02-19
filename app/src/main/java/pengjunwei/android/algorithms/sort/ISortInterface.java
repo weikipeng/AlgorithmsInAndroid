@@ -5,4 +5,12 @@ package pengjunwei.android.algorithms.sort;
  */
 public interface ISortInterface {
     void sort(Object view);
+
+    /**
+     * 获取算法的名字
+     */
+    String getSortAlgorithmsName();
+
+    /**停止*/
+    void stop();
 }

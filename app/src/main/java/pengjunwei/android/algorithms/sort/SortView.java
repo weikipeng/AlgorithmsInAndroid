@@ -156,4 +156,10 @@ public class SortView extends View {
 
         postInvalidate();
     }
+
+    public void stopAllTask() {
+        if (mSortInterface != null) {
+            mSortInterface.stop();
+        }
+    }
 }

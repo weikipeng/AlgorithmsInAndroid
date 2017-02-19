@@ -37,6 +37,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         init();
     }
 
+    @Override
+    protected void onDestroy() {
+        for (SortView sortView : mSortViews) {
+            sortView.stopAllTask();
+        }
+        super.onDestroy();
+    }
+
     private void init() {
         mBtnStart = (Button) findViewById(R.id.buttonStart);
         mBtnStart.setOnClickListener(this);
@@ -115,10 +123,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mSortViews[0].startSort();
                 break;
             case R.id.buttonFaster:
-                mSortViews[0].getSortInfo().sleepTime /= 2;
+                mSortViews[0].getSortInfo().faster();
                 break;
             case R.id.buttonSlower:
-                mSortViews[0].getSortInfo().sleepTime *= 2;
+                mSortViews[0].getSortInfo().slower();
                 break;
         }
     }

@@ -40,7 +40,7 @@ public class SortInfo {
 
     public List<Integer> positionList;
     public List<Integer> removedList;
-    public long sleepTime = 500;
+    private long sleepTime = 500;
 
     public SortInfo() {
         positionList = new ArrayList<>();
@@ -73,5 +73,23 @@ public class SortInfo {
 
     public boolean isSorted() {
         return status == SORT_END;
+    }
+
+    public long getSleepTime(){
+        return sleepTime;
+    }
+
+    public void faster(){
+        sleepTime = sleepTime / 2;
+        if (sleepTime < 1) {
+            sleepTime = 1;
+        }
+    }
+
+    public void slower(){
+        sleepTime = sleepTime * 2;
+        if (sleepTime > 10000) {
+            sleepTime = 10000;
+        }
     }
 }
